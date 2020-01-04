@@ -7,6 +7,12 @@ router.get('/', (req, res) => {
    res.send(restaMock);
 });
 
+router.get('/:id', (req, res) => {
+   // res.send('<h1>Ruta GET de restautantes</h1>');
+   const resId = req.params.id
+   res.send(restaMock[resId-1]);
+});
+
 router.post('/', (req, res) => {
    res.send('Ruta POST de restaurantes');
 });
