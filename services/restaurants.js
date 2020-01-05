@@ -11,8 +11,9 @@ class RestaurantsService {
       return restaurants;
    }
 
-   async getRestaurant() {
-      const restaurant = await Promise.resolve(restaurantsDB[0]);
+   async getRestaurant(id) {
+      // const restaurant = await Promise.resolve(restaurantsDB[0]);
+      const restaurant = restaMock[id - 1];
       return restaurant;
    }
 

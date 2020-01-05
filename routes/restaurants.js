@@ -27,13 +27,23 @@ function restaurantsApi(app) {
          console.log(err);
       }
 
-
    });
 
-   router.get('/:id', (req, res) => {
+   router.get('/:id', async function (req, res) {
       // res.send('<h1>Ruta GET de restautantes</h1>');
       const resId = req.params.id
-      res.send(restaMock[resId-1]);
+      //res.send(restaMock[resId-1]);
+      
+      try {
+         const restaurants = await restaurantsService.getRestaurant(resId);
+         res.status(200).json({
+            data: restaurants,
+            message: 'Restaurante enviado'
+         });
+      } catch (err) {
+         console.log(err);
+      }
+
    });
 
    router.post('/', (req, res) => {
