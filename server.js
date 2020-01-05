@@ -3,7 +3,9 @@ const app = express();
 const port = 3001;
 
 const indexRouter = require('./routes/index');
-const restaurantsRouter = require('./routes/restaurants');
+// const restaurantsRouter = require('./routes/restaurants'); // Borrar ?
+const restaurantsApi = require('./routes/restaurants.js'); // API routes
+
 
 // Database
 const mysql = require('mysql');
@@ -32,12 +34,12 @@ mysqlConnection.query('SELECT * FROM restaurants', (err, rows) => {
 })
 
 // Middlewares
-//app.use(express.json());
+app.use(express.json());
 
 // Routes
 app.use('/', indexRouter);
-app.use('/restaurants', restaurantsRouter);
-
+// app.use('/restaurants', restaurantsRouter); 
+restaurantsApi(app); // Capa de rutas
 
 app.listen(port, () => {
    console.log(`Listening on port ${port}`);
