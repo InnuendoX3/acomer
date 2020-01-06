@@ -2,11 +2,11 @@ const express = require('express');
 const restaurantsDB = require('../db/connection');
 
 
-function restaurantsApi(app) {   
+function restaurantsApi(app) {
 
    const router = express.Router();
 
-   app.use('/restaurants', router);   
+   app.use('/restaurants', router);
 
    router.get('/', function (req, res) {
       restaurantsDB.query('SELECT * FROM restaurants', (err, rows) => {
@@ -23,8 +23,8 @@ function restaurantsApi(app) {
    });
 
    router.get('/:id', async function (req, res) {
-      const resId = req.params.id;
-      let quer = `SELECT * FROM restaurants WHERE id = ${resId}`
+      const reqId = req.params.id;
+      let quer = `SELECT * FROM restaurants WHERE id = ${reqId}`
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
@@ -44,7 +44,7 @@ function restaurantsApi(app) {
       let name = req.body.name;
       let address = req.body.address;
       let rating = req.body.rating;
-      
+
       let quer = `INSERT INTO restaurants (name, address, rating) VALUES ("${name}", "${address}", "${rating}")`;
 
       restaurantsDB.query(quer, (err, rows) => {
@@ -60,13 +60,17 @@ function restaurantsApi(app) {
    });
 
    router.put('/:id', (req, res) => {
-      const resId = req.params.id;
+      const reqId = req.params.id;
 
       let name = req.body.name;
       let address = req.body.address;
       let rating = req.body.rating;
 
-      let quer = `UPDATE restaurants SET name = "${name}", address = "${address}", rating = "${rating}"  WHERE id = "${resId}"`;
+      let quer = `UPDATE restaurants SET 
+         name = "${name}", 
+         address = "${address}", 
+         rating = "${rating}"  
+         WHERE id = "${reqId}"`;
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
@@ -79,8 +83,21 @@ function restaurantsApi(app) {
       });
    });
 
-   router.delete('/', (req, res) => {
-      res.send('Ruta DELETE de restaurantes');
+   router.delete('/:id', (req, res) => {
+      const reqId = req.params.id;
+
+      let quer = `DELETE FROM restaurants WHERE id = "${reqId}"`
+
+      restaurantsDB.query(quer, (err, rows) => {
+         if (err) {
+            console.log(err);
+         } else {
+            res.status(200).json({
+               message: `Restaurante ${reqId} eliminado`
+            });
+         }
+      });
+
    });
 
 }
