@@ -1,57 +1,82 @@
 const express = require('express');
-const RestaurantsService = require('../services/restaurants');
+const restaurantsDB = require('../db/connection');
 
 
+function restaurantsApi(app) {   
 
-
-function restaurantsApi(app) {
-   
-
-   console.log('Entra en la funcion del Modulo del API')
    const router = express.Router();
-   const restaurantsService = new RestaurantsService();
 
-   app.use('/restaurants', router);
-   
+   app.use('/restaurants', router);   
 
-   router.get('/', async function (req, res) {
-      //res.send('<h1>Ruta GET de restautantes</h1>');
-
-      try {
-         const restaurants = await restaurantsService.getRestaurants();
-         res.status(200).json({
-            data: restaurants,
-            message: 'Restaurantes enviados'
-         });
-      } catch (err) {
-         console.log(err);
-      }
-
+   router.get('/', function (req, res) {
+      restaurantsDB.query('SELECT * FROM restaurants', (err, rows) => {
+         if (err) {
+            console.log(err)
+         } else {
+            console.log(rows)
+            res.status(200).json({
+               data: rows,
+               message: 'Restaurantes enviados'
+            });
+         }
+      });
    });
 
    router.get('/:id', async function (req, res) {
-      // res.send('<h1>Ruta GET de restautantes</h1>');
-      const resId = req.params.id
-      //res.send(restaMock[resId-1]);
-      
-      try {
-         const restaurants = await restaurantsService.getRestaurant(resId);
-         res.status(200).json({
-            data: restaurants,
-            message: 'Restaurante enviado'
-         });
-      } catch (err) {
-         console.log(err);
-      }
+      const resId = req.params.id;
+      let quer = `SELECT * FROM restaurants WHERE id = ${resId}`
+      restaurantsDB.query(quer, (err, rows) => {
+         if (err) {
+            console.log(err)
+         } else {
+            console.log(rows)
+            res.status(200).json({
+               data: rows,
+               message: 'Restaurantes enviados'
+            });
+         }
+      });
 
    });
 
    router.post('/', (req, res) => {
-      res.send('Ruta POST de restaurantes');
+      // let id = req.body.id;
+      let name = req.body.name;
+      let address = req.body.address;
+      let rating = req.body.rating;
+      
+      let quer = `INSERT INTO restaurants (name, address, rating) VALUES ("${name}", "${address}", "${rating}")`;
+
+      restaurantsDB.query(quer, (err, rows) => {
+         if (err) {
+            console.log(err)
+         } else {
+            res.status(200).json({
+               message: 'Restaurante creado'
+            });
+         }
+      });
+
    });
 
-   router.put('/', (req, res) => {
-      res.send('Ruta PUT de restaurantes');
+   router.put('/:id', (req, res) => {
+      const resId = req.params.id;
+
+      let name = req.body.name;
+      let address = req.body.address;
+      let rating = req.body.rating;
+
+      let quer = `UPDATE restaurants SET name = "${name}", address = "${address}", rating = "${rating}"  WHERE id = "${resId}"`;
+
+      restaurantsDB.query(quer, (err, rows) => {
+         if (err) {
+            console.log(err)
+         } else {
+            res.status(200).json({
+               message: 'Restaurante modificado'
+            });
+         }
+      });
    });
 
    router.delete('/', (req, res) => {

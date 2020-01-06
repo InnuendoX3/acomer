@@ -1,14 +1,23 @@
-//const restaurantsDB = // aqui se require la base de datos, me imagino
+/* const restaurantsDB = require('../db/connection');
 
-const restaMock = require('../utils/resta-mocks');
+//const restaMock = require('../utils/resta-mocks');
 
 class RestaurantsService {
+
    async getRestaurants() {
-      // const restaurants = await Promise.resolve(restaurantsDB);
-      const restaurants = restaMock;
-      console.log('Entra en funcion getRestaurants()')
-      console.log(restaurants);
-      return restaurants;
+      //const restaurants = {};
+      
+      await restaurantsDB.query('SELECT * FROM restaurants', (err, rows) => {
+         if (err) {
+            console.log(err);
+         } else {
+            //console.log('De services: ');
+            //console.log(rows);
+
+            return rows;
+         }
+         //return restaurants;
+      });
    }
 
    async getRestaurant(id) {
@@ -33,4 +42,5 @@ class RestaurantsService {
    }
 }
 
-module.exports = RestaurantsService;
+
+module.exports = RestaurantsService; */
