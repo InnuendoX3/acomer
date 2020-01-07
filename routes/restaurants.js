@@ -13,13 +13,16 @@ function restaurantsApi(app) {
          if (err) {
             console.log(err)
          } else {
-            console.log(rows)
-            res.status(200).json({
+            let datos = {
                data: rows,
                message: 'Restaurantes enviados'
-            });
+            }
+            //console.log(datos)
+            res.render('../views/restaurants', datos);
          }
       });
+
+      
    });
 
    router.get('/new', async function (req, res) {
