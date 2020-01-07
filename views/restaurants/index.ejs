@@ -2,8 +2,19 @@
 
 <% for (const iterator of data) { %>
    <div>
-      <%= iterator.name %>
-      <%= iterator.address %>
-      <%= iterator.rating %>
+      <div>
+         <%= iterator.name %>
+      </div>
+      <div>
+         <%= iterator.address %>
+      </div>
+      <div>
+         <%= iterator.rating %>
+      </div>
+      <div>
+         <a href="/restaurants/edit/<%= iterator.id %>">edit</a>
+         <a href="/restaurants/delete/<%= iterator.id %>">delete</a>
+      </div>
+      ----
    </div>
 <% } %>

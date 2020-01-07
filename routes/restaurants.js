@@ -8,6 +8,7 @@ function restaurantsApi(app) {
 
    app.use('/restaurants', router);
 
+   // Show all restaurants
    router.get('/', function (req, res) {
       restaurantsDB.query('SELECT * FROM restaurants', (err, rows) => {
          if (err) {
@@ -17,14 +18,13 @@ function restaurantsApi(app) {
                data: rows,
                message: 'Restaurantes enviados'
             }
-            //console.log(datos)
+            console.log(datos)
             res.render('../views/restaurants', datos);
          }
       });
-
-      
    });
 
+   // Render form for create a restaurant
    router.get('/new', async function (req, res) {
       res.render('../views/restaurants/new.ejs');
    });
@@ -45,8 +45,7 @@ function restaurantsApi(app) {
       });
    });
 
-
-
+   // Save new restaurant on DB
    router.post('/', (req, res) => {
       // let id = req.body.id;
       let name = req.body.name;
@@ -57,17 +56,35 @@ function restaurantsApi(app) {
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
-            console.log(err)
+            console.log(err);
          } else {
-            res.status(200).json({
-               message: 'Restaurante creado'
-            });
+            res.redirect('/restaurants');
          }
       });
 
    });
 
-   router.put('/:id', (req, res) => {
+   // Render form with Restaurant info for update
+   router.get('/edit/:id', async function (req, res) {
+      const reqId = req.params.id;
+      let quer = `SELECT * FROM restaurants WHERE id = ${reqId}`
+      restaurantsDB.query(quer, (err, rows) => {
+         if (err) {
+            console.log(err)
+         } else {
+            let datos = {
+               data: rows,
+               message: 'Restaurante retrieved'
+            }
+            console.log(datos)
+            res.render('../views/restaurants/edit.ejs', datos);
+         }
+      });
+   });
+
+
+   // Save in DB changes of a single restaurant
+   router.post('/edit/:id', (req, res) => {
       const reqId = req.params.id;
 
       let name = req.body.name;
@@ -82,16 +99,14 @@ function restaurantsApi(app) {
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
-            console.log(err)
+            console.log(err);
          } else {
-            res.status(200).json({
-               message: 'Restaurante modificado'
-            });
+            res.redirect('/restaurants');
          }
       });
    });
 
-   router.delete('/:id', (req, res) => {
+   router.get('/delete/:id', (req, res) => {
       const reqId = req.params.id;
 
       let quer = `DELETE FROM restaurants WHERE id = "${reqId}"`
@@ -100,9 +115,7 @@ function restaurantsApi(app) {
          if (err) {
             console.log(err);
          } else {
-            res.status(200).json({
-               message: `Restaurante ${reqId} eliminado`
-            });
+            res.redirect('/restaurants');
          }
       });
 
