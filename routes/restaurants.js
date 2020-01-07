@@ -22,6 +22,10 @@ function restaurantsApi(app) {
       });
    });
 
+   router.get('/new', async function (req, res) {
+      res.render('../views/restaurants/new.ejs');
+   });
+
    router.get('/:id', async function (req, res) {
       const reqId = req.params.id;
       let quer = `SELECT * FROM restaurants WHERE id = ${reqId}`
@@ -36,8 +40,9 @@ function restaurantsApi(app) {
             });
          }
       });
-
    });
+
+
 
    router.post('/', (req, res) => {
       // let id = req.body.id;
