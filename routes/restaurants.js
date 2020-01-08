@@ -10,7 +10,8 @@ function restaurantsApi(app) {
 
    // Show all restaurants
    router.get('/', function (req, res) {
-      restaurantsDB.query('SELECT * FROM restaurants', (err, rows) => {
+      let quer = 'SELECT * FROM restaurants'
+      restaurantsDB.query(quer , (err, rows) => {
          if (err) {
             console.log(err)
          } else {
@@ -32,7 +33,8 @@ function restaurantsApi(app) {
    // SINGLE Render a single restarant
    router.get('/:id', async function (req, res) {
       const reqId = req.params.id;
-      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId};SELECT * FROM comments;`
+      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId}; 
+                  SELECT * FROM comments WHERE restaurantID = ${reqId};`
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
@@ -68,16 +70,18 @@ function restaurantsApi(app) {
 
    });
 
-   // Render form with Restaurant info for update
+   // EDIT: Render form with Restaurant info for update
    router.get('/edit/:id', async function (req, res) {
       const reqId = req.params.id;
-      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId}`
+      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId}; 
+                  SELECT avg(points) AS average FROM comments where restaurantID = ${reqId};`
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
          } else {
             let datos = {
-               data: rows,
+               data: rows[0],
+               averageRate: rows[1],
                message: 'Restaurant retrieved'
             }
             console.log(datos)
