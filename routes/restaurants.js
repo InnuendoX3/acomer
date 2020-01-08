@@ -18,7 +18,7 @@ function restaurantsApi(app) {
                data: rows,
                message: 'Restaurantes enviados'
             }
-            console.log(datos)
+            // console.log(datos)
             res.render('../views/restaurants', datos);
          }
       });
@@ -29,18 +29,22 @@ function restaurantsApi(app) {
       res.render('../views/restaurants/new.ejs');
    });
 
+   // SINGLE Render a single restarant
    router.get('/:id', async function (req, res) {
       const reqId = req.params.id;
-      let quer = `SELECT * FROM restaurants WHERE id = ${reqId}`
+      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId};SELECT * FROM comments;`
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
          } else {
-            console.log(rows)
-            res.status(200).json({
-               data: rows,
-               message: 'Restaurantes enviados'
-            });
+            let datos = {
+               dataResta: rows[0],
+               dataComments: rows[1],
+               message: 'Restaurant retrieved'
+            }
+            // console.log(datos);
+            // Datos contains two different data: because multipleStatements
+            res.render('../views/restaurants/single.ejs', datos);
          }
       });
    });
@@ -74,7 +78,7 @@ function restaurantsApi(app) {
          } else {
             let datos = {
                data: rows,
-               message: 'Restaurante retrieved'
+               message: 'Restaurant retrieved'
             }
             console.log(datos)
             res.render('../views/restaurants/edit.ejs', datos);
@@ -83,7 +87,7 @@ function restaurantsApi(app) {
    });
 
 
-   // Save in DB changes of a single restaurant
+   // UPDATE: Save in DB changes of a single restaurant
    router.post('/edit/:id', (req, res) => {
       const reqId = req.params.id;
 
@@ -106,6 +110,7 @@ function restaurantsApi(app) {
       });
    });
 
+   // DELETE Restaurant
    router.get('/delete/:id', (req, res) => {
       const reqId = req.params.id;
 
@@ -118,7 +123,24 @@ function restaurantsApi(app) {
             res.redirect('/restaurants');
          }
       });
+   });
 
+   // Rate restaurant
+   router.post('/rate/:id', (req, res) => {
+      const reqId = req.params.id;
+
+      let points = req.body.points;
+      let comment = req.body.comment;
+
+      let quer = `INSERT INTO comments (points, comment, restaurantID) VALUES ("${points}", "${comment}", "${reqId}")`;
+
+      restaurantsDB.query(quer, (err, rows) => {
+         if (err) {
+            console.log(err);
+         } else {
+            res.redirect(`/restaurants/${reqId}`);
+         }
+      });
    });
 
 }

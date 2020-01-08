@@ -1,0 +1,51 @@
+<div>
+   <h3><%= dataResta[0].name %></h3>
+</div>
+<div>
+   <%= dataResta[0].type %>
+</div>
+<div>
+   <%= dataResta[0].city %>
+</div>
+<div>
+   <%= dataResta[0].address %>
+</div>
+<div>
+   <%= dataResta[0].rating %>
+</div>
+
+<form class="form-group" action="/restaurants/rate/<%= dataResta[0].restaurantID %>" method="POST">
+      
+      <label for="points">Rate restaurant</label>
+      <select name="points">
+         <option value="1">1</option>
+         <option value="2">2</option>
+         <option value="3">3</option>
+         <option value="4">4</option>
+         <option value="5">5</option>
+      </select>
+      <textarea name="comment" id="" cols="30" rows="4" placeholder="Your opinion"></textarea>
+      <button type="submit">Rate</button>
+</form>
+
+<!--Edit and Delete-->
+
+<div>
+   <a href="/restaurants/edit/<%= dataResta[0].restaurantID %>"><small>Edit</small></a>
+   <a href="/restaurants/delete/<%= dataResta[0].restaurantID %>"><small>Delete</small></a>
+</div>
+
+<h4>Reviews</h4>
+<% for (const iterator of dataComments) { %>
+   <div>
+
+      <div>
+         <%= iterator.points %>
+      </div>
+      <div>
+         <%= iterator.comment %>
+      </div>
+      ----
+   </div>
+<% } %>
+
