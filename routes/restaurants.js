@@ -25,8 +25,6 @@ function restaurantsApi(app) {
                         WHERE restaurantID = "${resta.restaurantID}";`, (err, rows) => {
                            if(err) {
                               console.log(err);
-                           } else {
-                              console.log('Todo bien');
                            }
                         })
                   }
@@ -37,7 +35,7 @@ function restaurantsApi(app) {
                data: rows[0],
                message: 'Restaurantes enviados'
             }
-            console.log(datos)
+            // console.log(datos)
             res.render('../views/restaurants', datos);
          }
       });
@@ -73,10 +71,11 @@ function restaurantsApi(app) {
    router.post('/', (req, res) => {
       // let id = req.body.id;
       let name = req.body.name;
+      let type = req.body.type;
+      let city = req.body.city;
       let address = req.body.address;
-      let rating = req.body.rating;
 
-      let quer = `INSERT INTO restaurants (name, address, rating) VALUES ("${name}", "${address}", "${rating}")`;
+      let quer = `INSERT INTO restaurants (name, type, city, address, rating) VALUES ("${name}", "${type}", "${city}", "${address}", 0)`;
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
@@ -114,13 +113,15 @@ function restaurantsApi(app) {
       const reqId = req.params.id;
 
       let name = req.body.name;
+      let type = req.body.type;
+      let city = req.body.city;
       let address = req.body.address;
-      let rating = req.body.rating;
 
       let quer = `UPDATE restaurants SET 
          name = "${name}", 
          address = "${address}", 
-         rating = "${rating}"  
+         type = "${type}",
+         city = "${city}" 
          WHERE restaurantID = "${reqId}"`;
 
       restaurantsDB.query(quer, (err, rows) => {
