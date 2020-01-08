@@ -37,15 +37,14 @@
 
 <h4>Reviews</h4>
 <% for (const iterator of dataComments) { %>
-   <div>
+   <div class="card" style="width: 85%;">
 
-      <div>
-         <%= iterator.points %>
+      <div class="card-body">
+         Rated: <%= iterator.points %>
+         <br>
+         <em><%= iterator.comment %></em>
       </div>
-      <div>
-         <%= iterator.comment %>
-      </div>
-      ----
+
    </div>
 <% } %>
 

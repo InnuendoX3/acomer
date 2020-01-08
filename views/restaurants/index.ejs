@@ -1,9 +1,9 @@
 <h3>All Restaurants</h3>
 
 <% for (const iterator of data) { %>
-   <div>
+   <div class="card" style="width: 300px;">
       <div>
-         <h4>
+         <h4 class="card-title">
             <a href="/restaurants/<%= iterator.restaurantID %>">
                <%= iterator.name %>
             </a>
@@ -19,9 +19,7 @@
          <%= iterator.address %>
       </div>
       <div>
-         <%= iterator.rating %>
+         Rating: <%= iterator.rating %>
       </div>
-
-      ----
    </div>
 <% } %>

@@ -101,7 +101,7 @@ function restaurantsApi(app) {
                averageRate: rows[1],
                message: 'Restaurant retrieved'
             }
-            console.log(datos)
+            // console.log(datos)
             res.render('../views/restaurants/edit.ejs', datos);
          }
       });
