@@ -67,7 +67,7 @@ function restaurantsApi(app) {
    // Render form with Restaurant info for update
    router.get('/edit/:id', async function (req, res) {
       const reqId = req.params.id;
-      let quer = `SELECT * FROM restaurants WHERE id = ${reqId}`
+      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId}`
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
@@ -95,7 +95,7 @@ function restaurantsApi(app) {
          name = "${name}", 
          address = "${address}", 
          rating = "${rating}"  
-         WHERE id = "${reqId}"`;
+         WHERE restaurantID = "${reqId}"`;
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
@@ -109,7 +109,7 @@ function restaurantsApi(app) {
    router.get('/delete/:id', (req, res) => {
       const reqId = req.params.id;
 
-      let quer = `DELETE FROM restaurants WHERE id = "${reqId}"`
+      let quer = `DELETE FROM restaurants WHERE restaurantID = "${reqId}"`
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
