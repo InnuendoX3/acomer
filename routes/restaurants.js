@@ -10,16 +10,34 @@ function restaurantsApi(app) {
 
    // Show all restaurants
    router.get('/', function (req, res) {
-      let quer = 'SELECT * FROM restaurants'
+      let quer = 'SELECT * FROM restaurants; SELECT restaurantID, round(avg(points),0) as average FROM comments GROUP BY restaurantID;'
+      // Takes all restaurants & averagerate fromDB
       restaurantsDB.query(quer , (err, rows) => {
          if (err) {
             console.log(err)
          } else {
+            // Set average rate on restaurants rating
+            for (const resta of rows[0]) {
+               for (const aver of rows[1]) {
+                  if(resta.restaurantID == aver.restaurantID) {
+                     restaurantsDB.query(`UPDATE restaurants SET 
+                        rating = "${aver.average}"  
+                        WHERE restaurantID = "${resta.restaurantID}";`, (err, rows) => {
+                           if(err) {
+                              console.log(err);
+                           } else {
+                              console.log('Todo bien');
+                           }
+                        })
+                  }
+               }
+            }
+
             let datos = {
-               data: rows,
+               data: rows[0],
                message: 'Restaurantes enviados'
             }
-            // console.log(datos)
+            console.log(datos)
             res.render('../views/restaurants', datos);
          }
       });
