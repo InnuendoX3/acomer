@@ -1,43 +1,52 @@
-<div>
-   <h3><%= dataResta[0].name %></h3>
-</div>
-<div>
-   <%= dataResta[0].type %>
-</div>
-<div>
-   <%= dataResta[0].city %>
-</div>
-<div>
-   <%= dataResta[0].address %>
-</div>
-<div>
-   <%= dataResta[0].rating %>
+
+<div class="card border-primary m-3 col-md-4">
+   <div class="card-body">
+      <div>
+         <h3 class="card-title"><%= dataResta[0].name %></h3>
+      </div>
+      <div>
+         <%= dataResta[0].type %>
+      </div>
+      <div>
+         <%= dataResta[0].city %>
+      </div>
+      <div>
+         <%= dataResta[0].address %>
+      </div>
+      <div>
+         <%= dataResta[0].rating %>
+      </div>
+   </div>
 </div>
 
-<form class="form-group" action="/restaurants/rate/<%= dataResta[0].restaurantID %>" method="POST">
-      
+<form action="/restaurants/rate/<%= dataResta[0].restaurantID %>" method="POST" class="col-md-4">
+   <div class="form-group">
       <label for="points">Rate restaurant</label>
-      <select name="points">
+      <select name="points"class="form-control">
          <option value="1">1</option>
          <option value="2">2</option>
          <option value="3" selected="selected">3</option>
          <option value="4">4</option>
          <option value="5">5</option>
       </select>
-      <textarea name="comment" id="" cols="30" rows="4" placeholder="Your opinion"></textarea>
-      <button type="submit">Rate</button>
+   </div>
+   <div class="form-group">
+      <textarea name="comment" id="" cols="30" rows="4" placeholder="Your opinion" class="form-control"></textarea>
+   </div>
+   <button type="submit">Rate</button>
+   <div>
+      <a href="/restaurants/edit/<%= dataResta[0].restaurantID %>"><small>Edit</small></a>
+      <a href="/restaurants/delete/<%= dataResta[0].restaurantID %>"><small>Delete</small></a>
+   </div>
 </form>
 
 <!--Edit and Delete-->
 
-<div>
-   <a href="/restaurants/edit/<%= dataResta[0].restaurantID %>"><small>Edit</small></a>
-   <a href="/restaurants/delete/<%= dataResta[0].restaurantID %>"><small>Delete</small></a>
-</div>
+
 
 <h4>Reviews</h4>
 <% for (const iterator of dataComments) { %>
-   <div class="card" style="width: 85%;">
+   <div class="card border-primary m-1" style="width: 85%;">
 
       <div class="card-body">
          Rated: <%= iterator.points %>
