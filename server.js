@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const port = 3001;
 
 const indexRouter = require('./routes/index');
+const credentialsRouter = require('./routes/credentials')
 // const restaurantsRouter = require('./routes/restaurants'); // Borrar ?
 const restaurantsApi = require('./routes/restaurants.js'); // API routes
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 // Routes
 app.use('/', indexRouter);
+app.use('/', credentialsRouter)
 // app.use('/restaurants', restaurantsRouter); 
 restaurantsApi(app); // Capa de rutas
 
