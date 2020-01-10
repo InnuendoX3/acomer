@@ -10,29 +10,14 @@ function restaurantsApi(app) {
 
    // Show all restaurants
    router.get('/', function (req, res) {
-      let quer = 'SELECT * FROM restaurants; SELECT restaurantID, round(avg(points),1) as average FROM comments GROUP BY restaurantID;'
+      let quer = 'SELECT * FROM restaurants;'
       // Takes all restaurants & averagerate fromDB
-      restaurantsDB.query(quer , (err, rows) => {
+      restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
          } else {
-            // Set average rate on restaurants rating
-            for (const resta of rows[0]) {
-               for (const aver of rows[1]) {
-                  if(resta.restaurantID == aver.restaurantID) {
-                     restaurantsDB.query(`UPDATE restaurants SET 
-                        rating = "${aver.average}"  
-                        WHERE restaurantID = "${resta.restaurantID}";`, (err, rows) => {
-                           if(err) {
-                              console.log(err);
-                           }
-                        })
-                  }
-               }
-            }
-
             let datos = {
-               data: rows[0],
+               data: rows,
                message: 'Restaurantes enviados'
             }
             // console.log(datos)
@@ -90,18 +75,15 @@ function restaurantsApi(app) {
    // EDIT: Render form with Restaurant info for update
    router.get('/edit/:id', async function (req, res) {
       const reqId = req.params.id;
-      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId}; 
-                  SELECT avg(points) AS average FROM comments where restaurantID = ${reqId};`
+      let quer = `SELECT * FROM restaurants WHERE restaurantID = ${reqId};`
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err)
          } else {
             let datos = {
                data: rows[0],
-               averageRate: rows[1],
                message: 'Restaurant retrieved'
             }
-            // console.log(datos)
             res.render('../views/restaurants/edit.ejs', datos);
          }
       });
@@ -161,6 +143,30 @@ function restaurantsApi(app) {
          if (err) {
             console.log(err);
          } else {
+            // Refresh all restaurants with a new average
+            let quer2 = 'SELECT * FROM restaurants; SELECT restaurantID, round(avg(points),1) as average FROM comments GROUP BY restaurantID;'
+            // Takes all restaurants & averagerate fromDB
+            restaurantsDB.query(quer2, (err, rows) => {
+               if (err) {
+                  console.log(err)
+               } else {
+                  // Set average rate on restaurants rating
+                  for (const resta of rows[0]) {
+                     for (const aver of rows[1]) {
+                        if (resta.restaurantID == aver.restaurantID) {
+                           restaurantsDB.query(`UPDATE restaurants SET 
+                              rating = "${aver.average}"  
+                              WHERE restaurantID = "${resta.restaurantID}";`, (err, rows) => {
+                              if (err) {
+                                 console.log(err);
+                              }
+                           })
+                        }
+                     }
+                  }
+               }
+            });
+
             res.redirect(`/restaurants/${reqId}`);
          }
       });
