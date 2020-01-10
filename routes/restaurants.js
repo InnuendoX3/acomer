@@ -10,7 +10,7 @@ function restaurantsApi(app) {
 
    // Show all restaurants
    router.get('/', function (req, res) {
-      let quer = 'SELECT * FROM restaurants; SELECT restaurantID, round(avg(points),0) as average FROM comments GROUP BY restaurantID;'
+      let quer = 'SELECT * FROM restaurants; SELECT restaurantID, round(avg(points),1) as average FROM comments GROUP BY restaurantID;'
       // Takes all restaurants & averagerate fromDB
       restaurantsDB.query(quer , (err, rows) => {
          if (err) {
