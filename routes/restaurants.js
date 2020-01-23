@@ -60,7 +60,8 @@ function restaurantsApi(app) {
       let city = req.body.city;
       let address = req.body.address;
 
-      let quer = `INSERT INTO restaurants (name, type, city, address, rating) VALUES ("${name}", "${type}", "${city}", "${address}", 0)`;
+      let quer = `INSERT INTO restaurants (name, type, city, address, rating) 
+                  VALUES ("${name}", "${type}", "${city}", "${address}", 0)`;
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
@@ -137,14 +138,17 @@ function restaurantsApi(app) {
       let points = req.body.points;
       let comment = req.body.comment;
 
-      let quer = `INSERT INTO comments (points, comment, restaurantID) VALUES ("${points}", "${comment}", "${reqId}")`;
+      let quer = `INSERT INTO comments (points, comment, restaurantID) 
+                  VALUES ("${points}", "${comment}", "${reqId}")`;
 
       restaurantsDB.query(quer, (err, rows) => {
          if (err) {
             console.log(err);
          } else {
             // Refresh all restaurants with a new average
-            let quer2 = 'SELECT * FROM restaurants; SELECT restaurantID, round(avg(points),1) as average FROM comments GROUP BY restaurantID;'
+            let quer2 = `SELECT * FROM restaurants; 
+                        SELECT restaurantID, round(avg(points),1) as average 
+                        FROM comments GROUP BY restaurantID;`
             // Takes all restaurants & averagerate fromDB
             restaurantsDB.query(quer2, (err, rows) => {
                if (err) {
