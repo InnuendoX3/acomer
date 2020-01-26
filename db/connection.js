@@ -1,11 +1,19 @@
+require('dotenv').config();
 // Database
 const mysql = require('mysql');
+
+/* 
+Conection lost: the server closed the connection.
+Happens betweern 12 - 2am?
+https://stackoverflow.com/questions/20210522/nodejs-mysql-error-connection-lost-the-server-closed-the-connection
+*/
+
 const mysqlConnection = mysql.createConnection({
-   host: 'us-cdbr-iron-east-05.cleardb.net',
-   port: '3306',
-   user: 'b3ce64741dab55',
-   password: 'f1994ffc',
-   database: 'heroku_95a7c92138877e3',
+   host: process.env.JHOST,
+   port: process.env.JPORT,
+   user: process.env.JUSER,
+   password: process.env.JPASSWORD,
+   database: process.env.JDATABASE,
    multipleStatements: 'true'
 });
 
