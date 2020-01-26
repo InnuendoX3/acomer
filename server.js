@@ -27,7 +27,6 @@ app.use(express.json());
 
 // Routes
 app.use('/', indexRouter);
-/* app.use('/', credentialsRouter) */
 restaurantsApi(app); // Capa de rutas
 
 
@@ -41,6 +40,7 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
+const methodOverride = require('method-override');
 
 app.use(flash());
 app.use(session({
@@ -49,7 +49,8 @@ app.use(session({
    saveUninitialized: false
 }));
 app.use(passport.initialize());
-app.use(passport.session()); 
+app.use(passport.session());
+app.use(methodOverride('_method'));
 
 const initializePassport = require('./passport-config');
 initializePassport(
@@ -83,11 +84,11 @@ function loadUsers() {
 loadUsers()
 
 
-app.get('/register', (req, res) => {
+app.get('/register', checkNotAuthenticated, (req, res) => {
    res.render('credentials/register')
 })
 
-app.post('/register', async (req, res) => {
+app.post('/register', checkNotAuthenticated, async (req, res) => {
    let name = req.body.name;
    let email = req.body.email;
    let password = req.body.password;
@@ -110,21 +111,37 @@ app.post('/register', async (req, res) => {
 })
 
 
-app.get('/login', (req, res) => {
+app.get('/login', checkNotAuthenticated, (req, res) => {
    res.render('credentials/login')
 })
 
-app.post('/login', passport.authenticate('local', {
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
    successRedirect: '/restaurants',
    failureRedirect: '/login',
    failureFlash: true
 }))
 
 
-
-
-
 /********************* Hasta aqui ************/
+
+app.delete('/logout', (req, res) => {
+   req.logOut();
+   res.redirect('/login');
+});
+
+function checkAuthenticated(req, res, next) {
+   if (req.isAuthenticated()) {
+       return next();
+   }
+   res.redirect('/login');
+}
+
+function checkNotAuthenticated(req, res, next) {
+   if (req.isAuthenticated()) {
+       return res.redirect('/');
+   }
+   next();
+}
 
 app.listen(process.env.PORT || port, () => {
    console.log(`Listening on port ${port}`);
