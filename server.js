@@ -20,6 +20,7 @@ app.use(expressLayouts);
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
 
+let users = [];
 
 // Middlewares
 app.use(express.json());
@@ -53,23 +54,33 @@ app.use(passport.session());
 const initializePassport = require('./passport-config');
 initializePassport(
    passport,
-   email => {
-      let quer = `SELECT * FROM users WHERE email = ${email};`;
-      restaurantsDB.query(quer, (err, rows) => {
-         if (err) {
-            console.log(err);
-            console.log('Error tratando de encontrar user by email');
-         } else {
-            let user = {
-               id: rows[0].name
-               // Mas cosas ?
-            }
-            console.log(rows);
-            console.log(user);
-         }
-      })
-   }
+   email => users.find(user => user.email === email),
+   id => users.find(user => user.id === id)
 );
+
+function loadUsers() {
+
+   let query = "SELECT * FROM `users`";
+
+   restaurantsDB.query(query, (err, rows) => {
+      if (err) {
+         res.redirect('/');
+      }
+      users = [];
+      rows.forEach(user => {
+         let newUser = {
+            id: user.idusers,
+            name: user.name,
+            email: user.email,
+            password: user.password
+         }
+         users.push(newUser);
+         console.log(newUser);
+      });
+      console.log('Users on array: ' + users);
+   });
+}
+loadUsers()
 
 
 app.get('/register', (req, res) => {
@@ -89,6 +100,7 @@ app.post('/register', async (req, res) => {
          if (err) {
             console.log(err);
          } else {
+            loadUsers();
             res.redirect('/login');
          }
       })
