@@ -9,8 +9,6 @@ const bodyParser = require('body-parser');
 const port = 3001;
 
 const indexRouter = require('./routes/index');
-/* const credentialsRouter = require('./routes/credentials') */
-// const restaurantsRouter = require('./routes/restaurants'); // Borrar ?
 const restaurantsApi = require('./routes/restaurants.js'); // API routes
 
 app.set('view engine', 'ejs');
@@ -30,11 +28,8 @@ app.use('/', indexRouter);
 restaurantsApi(app); // Capa de rutas
 
 
-
 /*************** User routes ***************/
 
-
-// const router = express.Router();
 const restaurantsDB = require('./db/connection');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
@@ -76,9 +71,8 @@ function loadUsers() {
             password: user.password
          }
          users.push(newUser);
-         console.log(newUser);
+         // console.log(newUser);
       });
-      console.log('Users on array: ' + users);
    });
 }
 loadUsers()
@@ -110,7 +104,6 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
    }
 })
 
-
 app.get('/login', checkNotAuthenticated, (req, res) => {
    res.render('credentials/login')
 })
@@ -122,7 +115,6 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
 }))
 
 
-/********************* Hasta aqui ************/
 
 app.delete('/logout', (req, res) => {
    req.logOut();
